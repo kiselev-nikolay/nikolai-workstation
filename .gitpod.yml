@@ -1,2 +1,1 @@
-image:
-  file: ghcr.io/kiselev-nikolay/nikolai-workstation:main
+image: ghcr.io/kiselev-nikolay/nikolai-workstation:main
