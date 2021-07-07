@@ -18,5 +18,8 @@ RUN sudo $(which go) install github.com/haya14busa/goplay/cmd/goplay@latest
 RUN sudo $(which go) install github.com/go-delve/delve/cmd/dlv@latest
 RUN sudo $(which go) install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 RUN sudo $(which go) install golang.org/x/tools/gopls@latest
+RUN sudo $(which go) install github.com/go-task/task/v3/cmd/task@latest
+RUN go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
+RUN go get -u golang.org/x/tools/cmd/stringer
 
 RUN sudo chsh -s /usr/bin/fish
