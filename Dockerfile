@@ -4,22 +4,27 @@ RUN sudo apt update \
  && sudo apt install -y fish \
  && sudo rm -rf /var/lib/apt/lists/*
 
-RUN wget https://gist.githubusercontent.com/kiselev-nikolay/156e7686c3a0e9020576d86602616165/raw/3e36a1592432eb2a868a9bc25015d3345827df12/config.fish \
+RUN wget https://gist.githubusercontent.com/kiselev-nikolay/156e7686c3a0e9020576d86602616165/raw/5bb5783ce1312e3f74d4f2019e02770550302379/config.fish \
     -P .config/fish/
-RUN wget https://gist.githubusercontent.com/kiselev-nikolay/156e7686c3a0e9020576d86602616165/raw/3e36a1592432eb2a868a9bc25015d3345827df12/fish_variables \
+RUN wget https://gist.githubusercontent.com/kiselev-nikolay/156e7686c3a0e9020576d86602616165/raw/5bb5783ce1312e3f74d4f2019e02770550302379/fish_variables \
     -P .config/fish/
 
-RUN sudo $(which go) install github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest
-RUN sudo $(which go) install github.com/ramya-rao-a/go-outline@latest
-RUN sudo $(which go) install github.com/cweill/gotests/gotests@latest
-RUN sudo $(which go) install github.com/fatih/gomodifytags@latest
-RUN sudo $(which go) install github.com/josharian/impl@latest
-RUN sudo $(which go) install github.com/haya14busa/goplay/cmd/goplay@latest
-RUN sudo $(which go) install github.com/go-delve/delve/cmd/dlv@latest
-RUN sudo $(which go) install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-RUN sudo $(which go) install golang.org/x/tools/gopls@latest
-RUN sudo $(which go) install github.com/go-task/task/v3/cmd/task@latest
-RUN sudo $(which go) get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
-RUN sudo $(which go) get -u golang.org/x/tools/cmd/stringer
+# FIXIT ?
+RUN sudo mkdir -m 777 /workspace
+RUN sudo chown gitpod:gitpod /workspace
+RUN chmod -R 755 /workspace
 
+RUN go get -u github.com/uudashr/gopkgs/v2/cmd/gopkgs \
+              github.com/ramya-rao-a/go-outline \
+              github.com/cweill/gotests/gotests \
+              github.com/fatih/gomodifytags \
+              github.com/josharian/impl \
+              github.com/haya14busa/goplay/cmd/goplay \
+              github.com/go-delve/delve/cmd/dlv \
+              golang.org/x/tools/gopls \
+              github.com/go-task/task/v3/cmd/task \
+              golang.org/x/tools/cmd/stringer
+RUN go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
+
+RUN fish -c "alias summontask='git checkout origin/master -- Taskfile.yml && git rm --cached Taskfile.yml && echo Taskfile.yml >> .git/info/exclude' && funcsave summontask"
 RUN sudo chsh -s /usr/bin/fish
