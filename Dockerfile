@@ -29,5 +29,5 @@ RUN wget https://gist.githubusercontent.com/kiselev-nikolay/156e7686c3a0e9020576
     -P /home/gitpod/.config/fish/
 
 RUN fish -c "set -U fish_user_paths /home/gitpod/go/bin $fish_user_paths"
-RUN fish -c "alias summontask='git checkout origin/master -- Taskfile.yml && git rm --cached Taskfile.yml && echo Taskfile.yml >> .git/info/exclude && && echo .task >> .git/info/exclude' && funcsave summontask"
+RUN fish -c "alias summontask='git checkout origin/master -- Taskfile.yml && git rm --cached Taskfile.yml && echo Taskfile.yml >> .git/info/exclude && echo .task >> .git/info/exclude' && funcsave summontask"
 RUN sudo chsh -s /usr/bin/fish
