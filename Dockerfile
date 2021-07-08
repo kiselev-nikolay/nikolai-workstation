@@ -8,6 +8,7 @@ RUN apt update \
 
 USER gitpod
 
+ENV GOROOT ""
 ENV GOPATH=/home/gitpod/go
 ENV GOBIN=/home/gitpod/go/bin
 RUN go get -u github.com/uudashr/gopkgs/v2/cmd/gopkgs \
