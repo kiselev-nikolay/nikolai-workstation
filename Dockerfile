@@ -14,6 +14,7 @@ RUN sudo mkdir -m 777 /workspace
 RUN sudo chown gitpod:gitpod /workspace
 RUN chmod -R 755 /workspace
 
+USER gitpod
 RUN go get -u github.com/uudashr/gopkgs/v2/cmd/gopkgs \
               github.com/ramya-rao-a/go-outline \
               github.com/cweill/gotests/gotests \
@@ -22,9 +23,9 @@ RUN go get -u github.com/uudashr/gopkgs/v2/cmd/gopkgs \
               github.com/haya14busa/goplay/cmd/goplay \
               github.com/go-delve/delve/cmd/dlv \
               golang.org/x/tools/gopls \
-              github.com/go-task/task/v3/cmd/task \
               golang.org/x/tools/cmd/stringer
 RUN go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
+RUN go get github.com/go-task/task/v3/cmd/task@latest
 
 RUN fish -c "alias summontask='git checkout origin/master -- Taskfile.yml && git rm --cached Taskfile.yml && echo Taskfile.yml >> .git/info/exclude' && funcsave summontask"
 RUN sudo chsh -s /usr/bin/fish
