@@ -103,10 +103,14 @@ RUN sudo rm -rf $GOPATH/src $GOPATH/pkg /home/gitpod/.cache/go /home/gitpod/.cac
 USER root
 
 RUN apt install apt-transport-https ca-certificates curl gnupg lsb-release -y \
-    && curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    # && curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    && mkdir /var/lib/apt/dazzle-marks/ && curl -o /var/lib/apt/dazzle-marks/docker.gpg -fsSL https://download.docker.com/linux/ubuntu/gpg \
+    && apt-key add /var/lib/apt/dazzle-marks/docker.gpg \
+    # && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" \
     && apt-get update \
-    && apt-get install docker-ce docker-ce-cli containerd.io -y
+    # && apt-get install docker-ce docker-ce-cli containerd.io -y
+    && apt-get install docker-ce=5:19.03.15~3-0~ubuntu-focal docker-ce-cli=5:19.03.15~3-0~ubuntu-focal containerd.io -y
 RUN usermod -aG docker gitpod
 RUN curl -o /usr/bin/slirp4netns -fsSL https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.9/slirp4netns-$(uname -m) \
     && chmod +x /usr/bin/slirp4netns
