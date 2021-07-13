@@ -1,1 +1,12 @@
-image: ghcr.io/kiselev-nikolay/nikolai-workstation:main
+# image: ghcr.io/kiselev-nikolay/nikolai-workstation:latest
+
+# tasks:
+#   - init: |
+#       git remote add prod ...
+#       git fetch --all
+#       fish
+
+vscode:
+  extensions:
+    - mvllow.rose-pine
+    - miguelsolorio.fluent-icons

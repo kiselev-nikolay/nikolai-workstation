@@ -62,9 +62,12 @@ RUN sudo echo "Running 'sudo' for Gitpod: success" && \
 USER gitpod
 
 ENV GO_VERSION=1.16.5
-RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar xzs
-ENV GOPATH=/home/gitpod/go
-ENV GOBIN=/home/gitpod/go/bin
+RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar -xzs -C /tmp/ \
+    && mkdir /home/gitpod/go/ \
+    && mv /tmp/go /home/gitpod/go/current
+ENV GOROOT=/home/gitpod/go/current
+ENV GOPATH=/home/gitpod/go/data
+ENV GOBIN=/home/gitpod/go/data/bin
 ENV PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 RUN go get \
         github.com/mdempsky/gocode \
@@ -99,11 +102,11 @@ RUN sudo rm -rf $GOPATH/src $GOPATH/pkg /home/gitpod/.cache/go /home/gitpod/.cac
 
 USER root
 
-RUN apt install apt-transport-https ca-certificates curl gnupg lsb-release && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-RUN apt update && apt install docker-ce docker-ce-cli containerd.io -y
+RUN apt install apt-transport-https ca-certificates curl gnupg lsb-release -y \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && apt-get update \
+    && apt-get install docker-ce docker-ce-cli containerd.io
 RUN usermod -aG docker gitpod
 RUN curl -o /usr/bin/slirp4netns -fsSL https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.9/slirp4netns-$(uname -m) \
     && chmod +x /usr/bin/slirp4netns
