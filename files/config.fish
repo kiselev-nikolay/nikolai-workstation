@@ -40,3 +40,16 @@ function fish_prompt -d "Write out the prompt"
     end
     printf '%s%s%s ' (set_color normal)  (set_color normal)
 end
+
+function summon -d "Get file from master branch"
+    git checkout origin/master -- $argv
+    echo $argv >> .git/info/exclude
+end
+
+function summontask -d "Get Taskfile from master branch"
+    git checkout origin/master -- Taskfile.yml
+    echo Taskfile.yml >> .git/info/exclude
+    echo .task >> .git/info/exclude
+end
+
+set -U fish_user_paths /home/gitpod/go/bin $fish_user_paths

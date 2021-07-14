@@ -41,13 +41,6 @@ WORKDIR $HOME
 # custom Bash prompt
 RUN { echo && echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \\\$ '" ; } >> .bashrc
 
-RUN apt-get clean -y
-RUN rm -rf \
-   /var/cache/debconf/* \
-   /var/lib/apt/lists/* \
-   /tmp/* \
-   /var/tmp/*
-
 ### Gitpod user (2) ###
 USER gitpod
 # use sudo so that user does not get sudo usage info on (the first) login
@@ -102,20 +95,26 @@ RUN sudo rm -rf $GOPATH/src $GOPATH/pkg /home/gitpod/.cache/go /home/gitpod/.cac
 
 USER root
 
-RUN apt install apt-transport-https ca-certificates curl gnupg lsb-release -y \
-    # && curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
-    && mkdir /var/lib/apt/dazzle-marks/ && curl -o /var/lib/apt/dazzle-marks/docker.gpg -fsSL https://download.docker.com/linux/ubuntu/gpg \
+### Docker ###
+LABEL dazzle/layer=tool-docker
+LABEL dazzle/test=tests/tool-docker.yaml
+USER root
+ENV TRIGGER_REBUILD=2
+# https://docs.docker.com/engine/install/ubuntu/
+RUN mkdir /var/lib/apt/dazzle-marks/
+RUN curl -o /var/lib/apt/dazzle-marks/docker.gpg -fsSL https://download.docker.com/linux/ubuntu/gpg \
     && apt-key add /var/lib/apt/dazzle-marks/docker.gpg \
-    # && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null \
-    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" \
-    && apt-get update \
-    # && apt-get install docker-ce docker-ce-cli containerd.io -y
-    && apt-get install docker-ce=5:19.03.15~3-0~ubuntu-focal docker-ce-cli=5:19.03.15~3-0~ubuntu-focal containerd.io -y
-RUN usermod -aG docker gitpod
+    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian stretch stable" \
+    && apt update \
+    && apt install -y docker-ce=5:19.03.15~3-0~debian-stretch docker-ce-cli=5:19.03.15~3-0~debian-stretch containerd.io
+
 RUN curl -o /usr/bin/slirp4netns -fsSL https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.9/slirp4netns-$(uname -m) \
     && chmod +x /usr/bin/slirp4netns
+
 RUN curl -o /usr/local/bin/docker-compose -fsSL https://github.com/docker/compose/releases/download/1.28.5/docker-compose-Linux-x86_64 \
     && chmod +x /usr/local/bin/docker-compose
+
+# https://github.com/wagoodman/dive
 RUN curl -o /tmp/dive.deb -fsSL https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb \
     && apt install /tmp/dive.deb \
     && rm /tmp/dive.deb
@@ -125,6 +124,12 @@ USER gitpod
 COPY --chown=gitpod files/fish_variables /home/gitpod/.config/fish/
 COPY --chown=gitpod files/config.fish /home/gitpod/.config/fish/
 
-RUN fish -c 'set -U fish_user_paths /home/gitpod/go/bin $fish_user_paths'
-RUN fish -c "alias summontask='git checkout origin/master -- Taskfile.yml && git rm --cached Taskfile.yml && echo Taskfile.yml >> .git/info/exclude && echo .task >> .git/info/exclude' && funcsave summontask"
 RUN sudo chsh -s /usr/bin/fish
+
+RUN sudo rm -fr /tmp/*
+RUN sudo apt clean -y
+RUN sudo rm -rf \
+   /var/cache/debconf/* \
+   /var/lib/apt/lists/* \
+   /tmp/* \
+   /var/tmp/*
