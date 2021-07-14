@@ -56,4 +56,4 @@ set -Ux GOBIN /home/gitpod/go/data/bin
 set -Ux GOPATH /home/gitpod/go/data
 set -Ux GOROOT /home/gitpod/go/current
 
-set -U fish_user_paths /home/gitpod/go/bin $fish_user_paths
+set -U fish_user_paths $GOBIN $fish_user_paths
