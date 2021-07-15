@@ -1,3 +1,4 @@
+---
 # image: ghcr.io/kiselev-nikolay/nikolai-workstation:latest
 
 # tasks:
@@ -10,3 +11,4 @@ vscode:
   extensions:
     - mvllow.rose-pine
     - miguelsolorio.fluent-icons
+    - bmalehorn.vscode-fish

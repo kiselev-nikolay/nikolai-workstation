@@ -23,32 +23,32 @@ end
 #
 
 function fish_greeting
+    printf 'Wellcome %s%s@%s%s\n' (set_color normal) $USER (i) (set_color normal)
 end
 
 function fish_prompt -d "Write out the prompt"
     set laststatus $status
-    printf '%s%s@%s%s ' (set_color green) $USER (i) (set_color normal)
-    printf '%s%s%s ' (set_color blue) (prompt_pwd) (set_color normal)
+    printf '\n%s %s%s' (set_color blue) (prompt_pwd) (set_color normal)
     if test -d .git
-        printf '%s %s%s ' (set_color magenta) (git rev-parse --symbolic-full-name @{upstream} | cut -d "/" -f 3,4 2> /dev/null) (set_color normal)
+        printf '\n%s %s%s ' (set_color magenta) (git rev-parse --symbolic-full-name @{upstream} | cut -d "/" -f 3,4 2> /dev/null) (set_color normal)
     end
-    printf '%s%s%s\n' (set_color normal) (date +"%T") (set_color normal)
+    printf '\n%s %s%s' (set_color green) (date +"%T") (set_color normal)
     if test $laststatus -eq 0
-        printf '%s%s%s ' (set_color blue)  (set_color normal)
+        printf '\n%s%s ' (set_color blue) (set_color normal)
     else
-        printf '%s%s%s ' (set_color red)  (set_color normal)
+        printf '\n%s%s ' (set_color red) (set_color normal)
     end
-    printf '%s%s%s ' (set_color normal)  (set_color normal)
+    printf '%s%s ' (set_color normal) (set_color normal)
 end
 
 function summon -d "Get file from master branch"
     git checkout origin/master -- $argv
     echo $argv >> .git/info/exclude
+    git rm --cached $argv
 end
 
 function summontask -d "Get Taskfile from master branch"
-    git checkout origin/master -- Taskfile.yml
-    echo Taskfile.yml >> .git/info/exclude
+    summon Taskfile.yml
     echo .task >> .git/info/exclude
 end
 
