@@ -9,6 +9,4 @@
 
 vscode:
   extensions:
-    - mvllow.rose-pine
-    - miguelsolorio.fluent-icons
     - bmalehorn.vscode-fish
