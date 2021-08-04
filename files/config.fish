@@ -27,11 +27,17 @@ function fish_prompt -d "Write out the prompt"
     set laststatus $status
     printf '\n%s%s%s' (set_color blue) (prompt_pwd) (set_color normal)
     if test -d .git
-        printf '\n%s%s%s ' (set_color magenta) (git rev-parse --symbolic-full-name @{upstream} | cut -d "/" -f 3,4 2> /dev/null) (set_color normal)
+        printf '\n%s%s%s ' (set_color green) (git rev-parse --symbolic-full-name @{upstream} | cut -d "/" -f 3,4 2> /dev/null) (set_color normal)
     end
-    printf '\n%s%s%s' (set_color green) (date +"%T") (set_color normal)
+    printf '\n%s%s%s' (set_color magenta) (date +"%T") (set_color normal)
     if test $laststatus -eq 0
-        printf '\n%s--%s' (set_color blue) (set_color normal)
+        printf '\n%s--%s' (set_color green) (set_color normal)
+    else if test $laststatus -eq 127
+        if test $taskfoundok -eq 1
+            printf '\n%s--%s' (set_color blue) (set_color normal)
+        else
+            printf '\n%s?-%s' (set_color red) (set_color normal)
+        end
     else
         printf '\n%sx-%s' (set_color red) (set_color normal)
     end
@@ -41,6 +47,13 @@ end
 function fish_right_prompt
     set laststatus $status
     if test $laststatus -eq 0
+        printf '%s+%s' (set_color green) (set_color normal)
+    else if test $laststatus -eq 127
+        if test $taskfoundok -eq 1
+            printf '%stask+%s' (set_color blue) (set_color normal)
+        else
+            printf '%s?%s' (set_color red) (set_color normal)
+        end
     else
         printf '%s%s%s' (set_color red) $laststatus (set_color normal)
     end
@@ -70,15 +83,12 @@ function fish_user_key_bindings
   bind '$' bind_dollar
 end
 
-function __task
-    echo trying "\"task $argv\""
-    task $argv
-end
-
 function __fish_default_command_not_found_handler
-    if begin __task $argv; end
+    if begin task $argv; end
+        set -U taskfoundok 1
     else
-        printf '%sCommand %s is not found, also as task%s\n' (set_color red) $argv[1] (set_color normal)
+        set -U taskfoundok 0
+        printf '%sCommand %s is not found; task %s either%s\n' (set_color red) $argv[1] $argv[1] (set_color normal)
     end
 end
 
