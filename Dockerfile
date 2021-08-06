@@ -73,7 +73,7 @@
         RUN GO111MODULE=on go get \
                 golang.org/x/tools/gopls@v0.7.1 \
                 golang.org/x/tools/cmd/stringer@v0.1.5 \
-                github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1 \
+                github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
         RUN go install github.com/go-task/task/v3/cmd/task@latest
 
     # Install docker  (From base https://github.com/gitpod-io/workspace-images)
