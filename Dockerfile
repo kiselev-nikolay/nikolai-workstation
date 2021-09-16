@@ -17,6 +17,7 @@
                 locales \
                 man-db \
                 nano \
+                protobuf-compiler \
                 software-properties-common \
                 sudo \
                 time \
