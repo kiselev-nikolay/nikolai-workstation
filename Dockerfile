@@ -38,7 +38,7 @@
 
     # Install go language support
         USER gitpod
-        ENV GO_VERSION=1.17
+        ENV GO_VERSION=1.17.1
         RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar -xzs -C /tmp/ \
             && mkdir /home/gitpod/go/ \
             && mv /tmp/go /home/gitpod/go/current
