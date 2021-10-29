@@ -27,6 +27,13 @@
                 ssl-cert \
                 fish \
                 zsh
+        RUN echo LANGUAGE=en_US.UTF-8 >> /etc/locale.conf
+        RUN echo LC_ALL=en_US.utf8 >> /etc/locale.conf
+        RUN echo LC_CTYPE=en_US.utf8 >> /etc/locale.conf
+        RUN echo LANG=en_US.utf8 >> /etc/locale.conf
+        ENV LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.utf8
+        RUN LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.utf8 locale-gen en_US.UTF-8 \
+            && LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.utf8 dpkg-reconfigure locales
 
     # Add gitpod user
         RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
@@ -39,7 +46,8 @@
 
     # Install go language support
         USER gitpod
-        ENV GO_VERSION=1.17.1
+        ENV LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+        ENV GO_VERSION=1.17.2
         RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar -xzs -C /tmp/ \
             && mkdir /home/gitpod/go/ \
             && mv /tmp/go /home/gitpod/go/current
@@ -70,7 +78,7 @@
                 github.com/sourcegraph/go-langserver \
                 github.com/go-delve/delve/cmd/dlv \
                 github.com/davidrjenni/reftools/cmd/fillstruct \
-                github.com/godoctor/godoctor        
+                github.com/godoctor/godoctor
         RUN go get golang.org/x/tools/cmd/stringer@v0.1.5
         RUN go get golang.org/x/tools/gopls@v0.7.1
         RUN go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1
