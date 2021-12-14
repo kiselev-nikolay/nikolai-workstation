@@ -23,7 +23,9 @@ end
 # Fish-related
 
 function fish_greeting
-    printf 'Wellcome %s%s@%s%s\n' (set_color normal) $USER (i) (set_color normal)
+    printf 'Wellcome %s%s@%s%s\n\n' (set_color normal) $USER (i) (set_color normal)
+    fortune
+    echo
 end
 
 function fish_prompt -d "Write out the prompt"
